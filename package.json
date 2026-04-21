@@ -9,6 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@turf/turf": "^7.3.5",
+    "@types/geojson": "^7946.0.16",
+    "maplibre-gl": "^5.23.0",
+    "ndamap-gl": "^1.0.5",
     "next": "16.2.4",
     "react": "19.2.4",
     "react-dom": "19.2.4"
