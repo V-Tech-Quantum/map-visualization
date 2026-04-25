@@ -12,10 +12,73 @@
   --font-mono: var(--font-geist-mono);
 }
 
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
+}
+
+/* Scenery Pin Styles */
+.scenery-pin {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  border: 3px solid white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #eee;
+  opacity: 0.8;
+}
+
+.scenery-pin:hover {
+  opacity: 1;
+  transform: scale(1.1) translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+.scenery-pin img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* Mapbox/NDA Popup Customization */
+.ndamapgl-popup-content {
+  padding: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  background: white;
+  max-width: 280px;
+}
+
+
+.popup-article {
+  padding: 16px;
+}
+
+.popup-article h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.popup-article p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #64748b;
+}
+
+.ndamapgl-popup-tip {
+  border-top-color: white !important;
 }

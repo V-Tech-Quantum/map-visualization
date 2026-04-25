@@ -83,12 +83,42 @@ export default function VietnamMap({ pinnedPoint }: VietnamMapProps) {
         if (!map.current) return;
         if (markerRef.current) markerRef.current.remove();
 
+        const { lng, lat } = e.lngLat;
+
+        // Reuse custom marker logic for clicks too
+        const el = document.createElement('div');
+        el.className = 'scenery-pin';
+        
+        const img = document.createElement('img');
+        img.src = 'https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=300&auto=format&fit=crop';
+        img.alt = 'Scenery';
+        el.appendChild(img);
+
+        const popupContent = document.createElement('div');
+        popupContent.className = 'popup-article';
+        popupContent.innerHTML = `
+          <h3>New Discovery</h3>
+          <p>This location has been pinned. Hover to explore more about the local geography and culture.</p>
+        `;
+
+        const popup = new ndamapgl.Popup({
+          offset: 35,
+          className: 'nda-popup',
+          closeButton: false,
+          closeOnClick: false
+        }).setDOMContent(popupContent);
+
         markerRef.current = new ndamapgl.Marker({
-          color: "#16a34a",
-          draggable: false
+          element: el,
+          anchor: 'bottom'
         })
-          .setLngLat([e.lngLat.lng, e.lngLat.lat])
+          .setLngLat([lng, lat])
           .addTo(map.current);
+
+        el.addEventListener('mouseenter', () => {
+          if (map.current) popup.setLngLat([lng, lat]).addTo(map.current);
+        });
+        el.addEventListener('mouseleave', () => popup.remove());
       });
     };
 
@@ -108,60 +138,49 @@ export default function VietnamMap({ pinnedPoint }: VietnamMapProps) {
       const { lat, lng } = pinnedPoint;
 
       if (markerRef.current) markerRef.current.remove();
+
+      // Create custom element for marker
+      const el = document.createElement('div');
+      el.className = 'scenery-pin';
+      
+      const img = document.createElement('img');
+      img.src = 'https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=300&auto=format&fit=crop';
+      img.alt = 'Scenery';
+      el.appendChild(img);
+
+      // Create popup content
+      const popupContent = document.createElement('div');
+      popupContent.className = 'popup-article';
+      popupContent.innerHTML = `
+        <h3>Ha Long Bay</h3>
+        <p>A stunning UNESCO World Heritage site known for its emerald waters and thousands of towering limestone islands topped by rainforests.</p>
+      `;
+
+      const popup = new ndamapgl.Popup({
+        offset: 35,
+        className: 'nda-popup',
+        closeButton: false,
+        closeOnClick: false
+      }).setDOMContent(popupContent);
+
+      // Add marker to map
       markerRef.current = new ndamapgl.Marker({
-        color: "#ef4444",
-        draggable: false
+        element: el,
+        anchor: 'bottom'
       })
         .setLngLat([lng, lat])
         .addTo(map.current);
 
-      const offset = 0.02;
-      const squareData: any = {
-        type: 'Feature',
-        geometry: {
-          type: 'Polygon',
-          coordinates: [
-            [
-              [lng - offset, lat - offset],
-              [lng + offset, lat - offset],
-              [lng + offset, lat + offset],
-              [lng - offset, lat + offset],
-              [lng - offset, lat - offset]
-            ]
-          ]
+      // Show popup on hover
+      el.addEventListener('mouseenter', () => {
+        if (map.current) {
+          popup.setLngLat([lng, lat]).addTo(map.current);
         }
-      };
+      });
 
-      if (!map.current.getSource('pinned-square')) {
-        map.current.addSource('pinned-square', {
-          type: 'geojson',
-          data: squareData
-        });
-        map.current.addLayer({
-          id: 'pinned-square-layer',
-          type: 'fill',
-          source: 'pinned-square',
-          paint: {
-            'fill-color': '#ef4444',
-            'fill-opacity': 0.3,
-            'fill-outline-color': '#ef4444'
-          }
-        });
-        map.current.addLayer({
-          id: 'pinned-square-border',
-          type: 'line',
-          source: 'pinned-square',
-          paint: {
-            'line-color': '#ef4444',
-            'line-width': 2
-          }
-        });
-      } else {
-        const source = map.current.getSource('pinned-square') as ndamapgl.GeoJSONSource;
-        if (source && source.setData) {
-          source.setData(squareData);
-        }
-      }
+      el.addEventListener('mouseleave', () => {
+        popup.remove();
+      });
 
       map.current.flyTo({
         center: [lng, lat],

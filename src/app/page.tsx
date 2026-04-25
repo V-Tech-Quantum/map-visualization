@@ -139,8 +139,8 @@ export default function Home() {
           <div className="flex flex-col lg:flex-row gap-8 min-h-[750px] mb-12">
 
             {/* Sidebar: Controls */}
-            <div className="w-full lg:w-80 shrink-0 flex flex-col gap-6">
-              <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200/60 shadow-2xl shadow-slate-200/40 sticky top-12">
+            <div className="w-full lg:w-80 shrink-0 flex flex-col gap-6 sticky top-12 self-start h-fit">
+              <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200/60 shadow-2xl shadow-slate-200/40">
                 <h3 className="text-xl font-bold mb-6 flex items-center gap-3 text-slate-800">
                   <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
                   Create Pin
