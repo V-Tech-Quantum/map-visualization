@@ -103,7 +103,7 @@ export default function VietnamMap({ pinnedPoint, onMapClick }: VietnamMapProps)
       popupContent.className = 'popup-article';
       popupContent.innerHTML = `
         <h3>Pin Details</h3>
-        <p>${pinnedPoint.description || 'Mockup picture and description.'}</p>
+        <p>${pinnedPoint.description || 'Pinned location.'}</p>
       `;
 
       const popup = new ndamapgl.Popup({
@@ -113,7 +113,7 @@ export default function VietnamMap({ pinnedPoint, onMapClick }: VietnamMapProps)
         closeOnClick: false
       }).setDOMContent(popupContent);
 
-      // Add marker to map
+      // Add custom marker to map
       markerRef.current = new ndamapgl.Marker({
         element: el,
         anchor: 'bottom'
@@ -150,20 +150,47 @@ export default function VietnamMap({ pinnedPoint, onMapClick }: VietnamMapProps)
     <div className="w-full h-full relative">
       <div ref={mapContainer} className="w-full h-full" />
 
-      <div className="absolute bottom-6 left-6 z-[10] flex gap-2 p-2 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200/60 shadow-xl">
-        {LAYERS.map(layer => (
-          <button
-            key={layer.name}
-            onClick={() => setActiveLayer(layer)}
-            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
-              activeLayer.name === layer.name
-                ? 'bg-green-600 text-white shadow-md shadow-green-600/20'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            {layer.name}
-          </button>
-        ))}
+      <div className="absolute bottom-6 left-6 z-[10] group">
+        <button 
+          className="w-14 h-14 rounded-2xl bg-white/90 backdrop-blur border-2 border-transparent shadow-lg flex flex-col items-center justify-center gap-1 text-[9px] font-black uppercase tracking-widest text-slate-600 transition-all group-hover:shadow-xl group-hover:scale-105"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 6 12 2 21 6 12 10 3 6"/><polygon points="3 11 12 15 21 11"/><polygon points="3 16 12 20 21 16"/></svg>
+          <span className="mt-0.5">Layers</span>
+        </button>
+
+        <div className="absolute bottom-0 left-0 w-48 bg-white rounded-3xl shadow-[0_20px_40px_-10px_rgba(0,0,0,0.15)] border border-slate-100 p-3 opacity-0 invisible scale-95 origin-bottom-left transition-all duration-200 group-hover:opacity-100 group-hover:visible group-hover:scale-100 flex flex-col gap-2">
+          <div className="px-3 py-2 text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 mb-1">
+            Map Type
+          </div>
+          {LAYERS.map(layer => (
+            <button
+              key={layer.name}
+              onClick={() => setActiveLayer(layer)}
+              className={`flex items-center gap-3 w-full p-3 rounded-2xl transition-all font-bold text-sm ${
+                activeLayer.name === layer.name
+                  ? 'bg-green-50 text-green-700'
+                  : 'text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              <div className={`p-2 rounded-xl ${activeLayer.name === layer.name ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-500'}`}>
+                {layer.name === 'Satellite' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12a8 8 0 0 1 16 0"/><path d="M4 20a16 16 0 0 1 16 0"/><path d="M12 4v8"/></svg>
+                )}
+                {layer.name === 'Day' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                )}
+                {layer.name === 'Night' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                )}
+              </div>
+              {layer.name}
+              
+              {activeLayer.name === layer.name && (
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="ml-auto text-green-500"><polyline points="20 6 9 17 4 12"/></svg>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

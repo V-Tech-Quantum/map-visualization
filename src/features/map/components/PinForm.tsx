@@ -51,7 +51,7 @@ export default function PinForm({
           />
         </div>
         <div>
-          <label className="block text-[11px] font-black text-slate-400 uppercase tracking-[0.15em] mb-2 ml-1">Map Image (Mockup)</label>
+          <label className="block text-[11px] font-black text-slate-400 uppercase tracking-[0.15em] mb-2 ml-1">Map File:</label>
           <div className="w-full border-1 border-dashed border-slate-200 rounded-2xl px-5 py-6 flex flex-col items-center justify-center text-slate-400 hover:bg-slate-50 hover:border-green-500 transition-all cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-2 text-slate-300"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" x2="12" y1="3" y2="15" /></svg>
             <span className="text-sm font-medium">Click to upload map</span>
