@@ -101,38 +101,17 @@ export default function Home() {
             </div>
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">Brand</h1>
           </div>
-          <nav className="hidden md:flex gap-8 text-sm font-medium text-slate-600">
+          {/* <nav className="hidden md:flex gap-8 text-sm font-medium text-slate-600">
             <a href="#" className="hover:text-green-600 transition-colors">Products</a>
             <a href="#" className="hover:text-green-600 transition-colors">Solutions</a>
             <a href="#" className="hover:text-green-600 transition-colors">Documentation</a>
-          </nav>
+          </nav> */}
           <div className="flex gap-4">
             <button className="bg-slate-900 text-white text-sm font-medium px-5 py-2.5 rounded-xl hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/10">
               Dashboard
             </button>
           </div>
         </header>
-
-        {/* Hero Section */}
-        <section className="text-center max-w-5xl mx-auto mb-32 lg:mb-48 py-12">
-          <h2 className="text-6xl md:text-8xl font-extrabold tracking-tight text-slate-900 mb-10 leading-[1.05]">
-            Lorem ipsum dolor <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-emerald-700">Gradient</span> aliqua
-          </h2>
-          <p className="text-xl md:text-2xl text-slate-600 mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <button
-              onClick={() => document.getElementById('workspace')?.scrollIntoView({ behavior: 'smooth' })}
-              className="bg-green-600 text-white px-10 py-5 rounded-full font-bold text-lg shadow-xl shadow-green-600/30 hover:bg-green-700 hover:-translate-y-1 transition-all w-full sm:w-auto"
-            >
-              Mapper
-            </button>
-            <button className="bg-white text-slate-700 px-10 py-5 rounded-full font-bold text-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all w-full sm:w-auto">
-              Learn more
-            </button>
-          </div>
-        </section>
 
         {/* Interactive Workspace Section */}
         <div id="workspace" className="scroll-mt-12 pt-12">
