@@ -5,15 +5,25 @@ import ndamapgl from 'ndamap-gl';
 import 'ndamap-gl/dist/ndamap-gl.css';
 
 interface VietnamMapProps {
-  pinnedPoint?: { lat: number; lng: number } | null;
+  pinnedPoint?: { lat: number; lng: number; description?: string } | null;
+  onMapClick?: (lat: number, lng: number) => void;
 }
 
-export default function VietnamMap({ pinnedPoint }: VietnamMapProps) {
+const MAP_API_KEY = process.env.NEXT_PUBLIC_MAP_API_KEY || 'YOUR_API_KEY';
+
+const LAYERS = [
+  { name: 'Day', url: `https://maptiles.ndamaps.vn/styles/day-v1/style.json?apikey=${MAP_API_KEY}` },
+  { name: 'Night', url: `https://maptiles.ndamaps.vn/styles/night-v1/style.json?apikey=${MAP_API_KEY}` },
+  { name: 'Satellite', url: `https://maptiles.ndamaps.vn/styles/satellite-v1/style.json?apikey=${MAP_API_KEY}` }
+];
+
+export default function VietnamMap({ pinnedPoint, onMapClick }: VietnamMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<ndamapgl.Map | null>(null);
-  const [showBorder, setShowBorder] = useState(true);
+  const [activeLayer, setActiveLayer] = useState(LAYERS[0]);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const markerRef = useRef<ndamapgl.Marker | null>(null);
+  const clickMarkerRef = useRef<ndamapgl.Marker | null>(null);
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -25,8 +35,8 @@ export default function VietnamMap({ pinnedPoint }: VietnamMapProps) {
 
       map.current = new ndamapgl.Map({
         container: mapContainer.current,
-        style: styleUrl,
-        center: [105.85237, 21.03024], // Fixed to [lng, lat]
+        style: activeLayer.url,
+        center: [105.85237, 21.03024],
         zoom: 15,
         maplibreLogo: true,
       });
@@ -45,80 +55,21 @@ export default function VietnamMap({ pinnedPoint }: VietnamMapProps) {
         }
       });
 
-      map.current.on('load', async () => {
+      map.current.on('load', () => {
         setIsMapLoaded(true);
-        if (!map.current) return;
-
-        try {
-          const response = await fetch('/data/vn_geo.json');
-          const data = await response.json();
-
-          if (!map.current.getSource('vietnam')) {
-            map.current.addSource('vietnam', {
-              type: 'geojson',
-              data: data
-            });
-          }
-
-          if (!map.current.getLayer('vietnam-border')) {
-            map.current.addLayer({
-              id: 'vietnam-border',
-              type: 'line',
-              source: 'vietnam',
-              layout: {
-                'visibility': showBorder ? 'visible' : 'none'
-              },
-              paint: {
-                'line-color': '#16a34a',
-                'line-width': 2
-              }
-            });
-          }
-        } catch (err) {
-          console.error("Error loading GeoJSON data:", err);
-        }
       });
 
       map.current.on('click', (e: any) => {
         if (!map.current) return;
-        if (markerRef.current) markerRef.current.remove();
+        if (clickMarkerRef.current) clickMarkerRef.current.remove();
 
         const { lng, lat } = e.lngLat;
-
-        // Reuse custom marker logic for clicks too
-        const el = document.createElement('div');
-        el.className = 'scenery-pin';
         
-        const img = document.createElement('img');
-        img.src = 'https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=300&auto=format&fit=crop';
-        img.alt = 'Scenery';
-        el.appendChild(img);
-
-        const popupContent = document.createElement('div');
-        popupContent.className = 'popup-article';
-        popupContent.innerHTML = `
-          <h3>New Discovery</h3>
-          <p>This location has been pinned. Hover to explore more about the local geography and culture.</p>
-        `;
-
-        const popup = new ndamapgl.Popup({
-          offset: 35,
-          className: 'nda-popup',
-          closeButton: false,
-          closeOnClick: false
-        }).setDOMContent(popupContent);
-
-        markerRef.current = new ndamapgl.Marker({
-          element: el,
-          anchor: 'bottom'
-        })
+        clickMarkerRef.current = new ndamapgl.Marker()
           .setLngLat([lng, lat])
           .addTo(map.current);
-
-        el.addEventListener('mouseenter', () => {
-          if (map.current) popup.setLngLat([lng, lat]).addTo(map.current);
-        });
-        el.addEventListener('mouseleave', () => popup.remove());
+          
+        if (onMapClick) onMapClick(lat, lng);
       });
     };
 
@@ -148,12 +99,11 @@ export default function VietnamMap({ pinnedPoint }: VietnamMapProps) {
       img.alt = 'Scenery';
       el.appendChild(img);
 
-      // Create popup content
       const popupContent = document.createElement('div');
       popupContent.className = 'popup-article';
       popupContent.innerHTML = `
-        <h3>Ha Long Bay</h3>
-        <p>A stunning UNESCO World Heritage site known for its emerald waters and thousands of towering limestone islands topped by rainforests.</p>
+        <h3>Pin Details</h3>
+        <p>${pinnedPoint.description || 'Mockup picture and description.'}</p>
       `;
 
       const popup = new ndamapgl.Popup({
@@ -191,30 +141,29 @@ export default function VietnamMap({ pinnedPoint }: VietnamMapProps) {
   }, [pinnedPoint, isMapLoaded]);
 
   useEffect(() => {
-    const m = map.current;
-    if (m && m.isStyleLoaded()) {
-      try {
-        if (m.getLayer('vietnam-border')) {
-          m.setLayoutProperty('vietnam-border', 'visibility', showBorder ? 'visible' : 'none');
-        }
-      } catch (e) { }
+    if (map.current && map.current.isStyleLoaded()) {
+      map.current.setStyle(activeLayer.url);
     }
-  }, [showBorder]);
+  }, [activeLayer]);
 
   return (
     <div className="w-full h-full relative">
       <div ref={mapContainer} className="w-full h-full" />
 
-      <div className="absolute bottom-6 left-6 z-[10] flex flex-col gap-2">
-        <button
-          onClick={() => setShowBorder(!showBorder)}
-          className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider shadow-lg transition-all border border-slate-200/60 backdrop-blur-sm ${showBorder
-            ? 'bg-green-600 text-white shadow-green-600/20 border-green-500'
-            : 'bg-white/80 text-slate-700 shadow-slate-200/50'
+      <div className="absolute bottom-6 left-6 z-[10] flex gap-2 p-2 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200/60 shadow-xl">
+        {LAYERS.map(layer => (
+          <button
+            key={layer.name}
+            onClick={() => setActiveLayer(layer)}
+            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+              activeLayer.name === layer.name
+                ? 'bg-green-600 text-white shadow-md shadow-green-600/20'
+                : 'text-slate-600 hover:bg-slate-100'
             }`}
-        >
-          {showBorder ? 'Hide Border' : 'Show Border'}
-        </button>
+          >
+            {layer.name}
+          </button>
+        ))}
       </div>
     </div>
   );
