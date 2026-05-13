@@ -13,6 +13,11 @@ interface PinFormProps {
 export default function PinForm({
   mgrs, setMgrs, wgs84, setWgs84, description, setDescription, handleCreate
 }: PinFormProps) {
+  const [north, setNorth] = React.useState("");
+  const [south, setSouth] = React.useState("");
+  const [east, setEast] = React.useState("");
+  const [west, setWest] = React.useState("");
+
   return (
     <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200/60 shadow-2xl shadow-slate-200/40">
       <h3 className="text-xl font-bold mb-6 flex items-center gap-3 text-slate-800">
@@ -27,9 +32,16 @@ export default function PinForm({
             value={mgrs}
             onChange={(e) => setMgrs(e.target.value)}
             placeholder="e.g. 48QWJ..."
-            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all placeholder:text-slate-300"
+            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all placeholder:text-slate-300"
           />
         </div>
+        
+        <div className="flex items-center gap-4 py-1">
+          <div className="h-px bg-slate-200 flex-1"></div>
+          <span className="text-xs font-bold text-slate-300 uppercase tracking-widest">OR</span>
+          <div className="h-px bg-slate-200 flex-1"></div>
+        </div>
+
         <div>
           <label className="block text-[11px] font-black text-slate-400 uppercase tracking-[0.15em] mb-2 ml-1">WGS84 (Lat, Lng)</label>
           <input
@@ -37,7 +49,7 @@ export default function PinForm({
             value={wgs84}
             onChange={(e) => setWgs84(e.target.value)}
             placeholder="e.g. 10.7626, 106.6601"
-            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all placeholder:text-slate-300"
+            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all placeholder:text-slate-300"
           />
         </div>
         <div>
@@ -47,14 +59,47 @@ export default function PinForm({
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="e.g. Target location..."
-            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all placeholder:text-slate-300"
+            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all placeholder:text-slate-300"
           />
         </div>
-        <div>
-          <label className="block text-[11px] font-black text-slate-400 uppercase tracking-[0.15em] mb-2 ml-1">Map File:</label>
-          <div className="w-full border-1 border-dashed border-slate-200 rounded-2xl px-5 py-6 flex flex-col items-center justify-center text-slate-400 hover:bg-slate-50 hover:border-green-500 transition-all cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-2 text-slate-300"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" x2="12" y1="3" y2="15" /></svg>
-            <span className="text-sm font-medium">Click to upload map</span>
+        
+        <div className="pt-2">
+          <label className="block text-[11px] font-black text-slate-400 uppercase tracking-[0.15em] mb-2 ml-1">Map File</label>
+          <div className="w-full border-1 border-dashed border-slate-200 rounded-xl px-4 py-3 flex items-center justify-center text-slate-400 hover:bg-slate-50 hover:border-green-500 transition-all cursor-pointer gap-2 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" x2="12" y1="3" y2="15" /></svg>
+            <span className="text-xs font-medium">Upload map</span>
+          </div>
+          
+          <label className="block text-[11px] font-black text-slate-400 uppercase tracking-[0.15em] mb-2 ml-1">Map Info</label>
+          <div className="grid grid-cols-2 gap-3">
+            <input
+              type="text"
+              value={north}
+              onChange={(e) => setNorth(e.target.value)}
+              placeholder="North Lat"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all placeholder:text-slate-300"
+            />
+            <input
+              type="text"
+              value={south}
+              onChange={(e) => setSouth(e.target.value)}
+              placeholder="South Lat"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all placeholder:text-slate-300"
+            />
+            <input
+              type="text"
+              value={east}
+              onChange={(e) => setEast(e.target.value)}
+              placeholder="East Lng"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all placeholder:text-slate-300"
+            />
+            <input
+              type="text"
+              value={west}
+              onChange={(e) => setWest(e.target.value)}
+              placeholder="West Lng"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all placeholder:text-slate-300"
+            />
           </div>
         </div>
         <button
